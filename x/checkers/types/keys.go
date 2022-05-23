@@ -34,10 +34,16 @@ const (
 )
 
 const (
-    PlayMoveEventKey       = "MovePlayed"
-    PlayMoveEventCreator   = "Creator"
-    PlayMoveEventIdValue   = "IdValue"
-    PlayMoveEventCapturedX = "CapturedX"
-    PlayMoveEventCapturedY = "CapturedY"
-    PlayMoveEventWinner    = "Winner"
+	PlayMoveEventKey       = "MovePlayed"
+	PlayMoveEventCreator   = "Creator"
+	PlayMoveEventIdValue   = "IdValue"
+	PlayMoveEventCapturedX = "CapturedX"
+	PlayMoveEventCapturedY = "CapturedY"
+	PlayMoveEventWinner    = "Winner"
+)
+
+const (
+	RejectGameEventKey     = "GameRejected"
+	RejectGameEventCreator = "Creator"
+	RejectGameEventIdValue = "IdValue"
 )
