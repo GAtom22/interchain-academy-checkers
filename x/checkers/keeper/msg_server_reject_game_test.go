@@ -4,11 +4,11 @@ import (
 	"context"
 	"testing"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/stretchr/testify/require"
 	"github.com/alice/checkers/x/checkers"
 	"github.com/alice/checkers/x/checkers/keeper"
 	"github.com/alice/checkers/x/checkers/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/stretchr/testify/require"
 )
 
 func setupMsgServerWithOneGameForRejectGame(t testing.TB) (types.MsgServer, keeper.Keeper, context.Context) {
@@ -53,7 +53,9 @@ func TestRejectGameByBlackNoMoveRemovedGame(t *testing.T) {
 	nextGame, found := keeper.GetNextGame(sdk.UnwrapSDKContext(context))
 	require.True(t, found)
 	require.EqualValues(t, types.NextGame{
-		IdValue: 2,
+		IdValue:  2,
+		FifoHead: "-1",
+		FifoTail: "-1",
 	}, nextGame)
 	_, found = keeper.GetStoredGame(sdk.UnwrapSDKContext(context), "1")
 	require.False(t, found)
@@ -98,7 +100,9 @@ func TestRejectGameByRedNoMoveRemovedGame(t *testing.T) {
 	nextGame, found := keeper.GetNextGame(sdk.UnwrapSDKContext(context))
 	require.True(t, found)
 	require.EqualValues(t, types.NextGame{
-		IdValue: 2,
+		IdValue:  2,
+		FifoHead: "-1",
+		FifoTail: "-1",
 	}, nextGame)
 	_, found = keeper.GetStoredGame(sdk.UnwrapSDKContext(context), "1")
 	require.False(t, found)
@@ -159,7 +163,9 @@ func TestRejectGameByRedOneMoveRemovedGame(t *testing.T) {
 	nextGame, found := keeper.GetNextGame(sdk.UnwrapSDKContext(context))
 	require.True(t, found)
 	require.EqualValues(t, types.NextGame{
-		IdValue: 2,
+		IdValue:  2,
+		FifoHead: "-1",
+		FifoTail: "-1",
 	}, nextGame)
 	_, found = keeper.GetStoredGame(sdk.UnwrapSDKContext(context), "1")
 	require.False(t, found)

@@ -81,7 +81,9 @@ func TestPlayMoveSavedGame(t *testing.T) {
 	nextGame, found := keeper.GetNextGame(sdk.UnwrapSDKContext(context))
 	require.True(t, found)
 	require.EqualValues(t, types.NextGame{
-		IdValue: 2,
+		IdValue:  2,
+		FifoHead: "1",
+		FifoTail: "1",
 	}, nextGame)
 	game1, found := keeper.GetStoredGame(sdk.UnwrapSDKContext(context), "1")
 	require.True(t, found)
@@ -92,7 +94,9 @@ func TestPlayMoveSavedGame(t *testing.T) {
 		Turn:      "r",
 		Red:       bob,
 		Black:     carol,
-		MoveCount: 1,
+		MoveCount: uint64(1),
+		BeforeId:  "-1",
+		AfterId:   "-1",
 	}, game1)
 }
 
@@ -122,6 +126,33 @@ func TestPlayMoveWrongPieceAtDestination(t *testing.T) {
 	})
 	require.Nil(t, playMoveResponse)
 	require.Equal(t, "Already piece at destination position: {0 1}: wrong move", err.Error())
+}
+
+func TestPlayMoveEmitted(t *testing.T) {
+	msgServer, _, context := setupMsgServerWithOneGameForPlayMove(t)
+	msgServer.PlayMove(context, &types.MsgPlayMove{
+		Creator: carol,
+		IdValue: "1",
+		FromX:   1,
+		FromY:   2,
+		ToX:     2,
+		ToY:     3,
+	})
+	ctx := sdk.UnwrapSDKContext(context)
+	require.NotNil(t, ctx)
+	events := sdk.StringifyEvents(ctx.EventManager().ABCIEvents())
+	require.Len(t, events, 1)
+	event := events[0]
+	require.Equal(t, event.Type, "message")
+	require.EqualValues(t, []sdk.Attribute{
+		{Key: "module", Value: "checkers"},
+		{Key: "action", Value: "MovePlayed"},
+		{Key: "Creator", Value: carol},
+		{Key: "IdValue", Value: "1"},
+		{Key: "CapturedX", Value: "-1"},
+		{Key: "CapturedY", Value: "-1"},
+		{Key: "Winner", Value: "NO_PLAYER"},
+	}, event.Attributes[6:])
 }
 
 func TestPlayMove2(t *testing.T) {
@@ -172,7 +203,9 @@ func TestPlayMove2SavedGame(t *testing.T) {
 	nextGame, found := keeper.GetNextGame(sdk.UnwrapSDKContext(context))
 	require.True(t, found)
 	require.EqualValues(t, types.NextGame{
-		IdValue: 2,
+		IdValue:  2,
+		FifoHead: "1",
+		FifoTail: "1",
 	}, nextGame)
 	game1, found := keeper.GetStoredGame(sdk.UnwrapSDKContext(context), "1")
 	require.True(t, found)
@@ -183,7 +216,9 @@ func TestPlayMove2SavedGame(t *testing.T) {
 		Turn:      "b",
 		Red:       bob,
 		Black:     carol,
-		MoveCount: 2,
+		MoveCount: uint64(2),
+		BeforeId:  "-1",
+		AfterId:   "-1",
 	}, game1)
 }
 
@@ -251,7 +286,9 @@ func TestPlayMove3SavedGame(t *testing.T) {
 	nextGame, found := keeper.GetNextGame(sdk.UnwrapSDKContext(context))
 	require.True(t, found)
 	require.EqualValues(t, types.NextGame{
-		IdValue: 2,
+		IdValue:  2,
+		FifoHead: "1",
+		FifoTail: "1",
 	}, nextGame)
 	game1, found := keeper.GetStoredGame(sdk.UnwrapSDKContext(context), "1")
 	require.True(t, found)
@@ -262,33 +299,8 @@ func TestPlayMove3SavedGame(t *testing.T) {
 		Turn:      "r",
 		Red:       bob,
 		Black:     carol,
-		MoveCount: 3,
+		MoveCount: uint64(3),
+		BeforeId:  "-1",
+		AfterId:   "-1",
 	}, game1)
-}
-
-func TestPlayMoveEmitted(t *testing.T) {
-	msgServer, _, context := setupMsgServerWithOneGameForPlayMove(t)
-	msgServer.PlayMove(context, &types.MsgPlayMove{
-		Creator: carol,
-		IdValue: "1",
-		FromX:   1,
-		FromY:   2,
-		ToX:     2,
-		ToY:     3,
-	})
-	ctx := sdk.UnwrapSDKContext(context)
-	require.NotNil(t, ctx)
-	events := sdk.StringifyEvents(ctx.EventManager().ABCIEvents())
-	require.Len(t, events, 1)
-	event := events[0]
-	require.Equal(t, event.Type, "message")
-	require.EqualValues(t, []sdk.Attribute{
-		{Key: "module", Value: "checkers"},
-		{Key: "action", Value: "MovePlayed"},
-		{Key: "Creator", Value: carol},
-		{Key: "IdValue", Value: "1"},
-		{Key: "CapturedX", Value: "-1"},
-		{Key: "CapturedY", Value: "-1"},
-		{Key: "Winner", Value: "NO_PLAYER"},
-	}, event.Attributes[6:])
 }

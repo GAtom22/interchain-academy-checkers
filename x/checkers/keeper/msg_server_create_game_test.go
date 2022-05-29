@@ -46,17 +46,21 @@ func TestCreate1GameHasSaved(t *testing.T) {
 	nextGame, found := keeper.GetNextGame(sdk.UnwrapSDKContext(context))
 	require.True(t, found)
 	require.EqualValues(t, types.NextGame{
-		IdValue: 2,
+		IdValue:  2,
+		FifoHead: "1",
+		FifoTail: "1",
 	}, nextGame)
 	game1, found1 := keeper.GetStoredGame(sdk.UnwrapSDKContext(context), "1")
 	require.True(t, found1)
 	require.EqualValues(t, types.StoredGame{
-		Creator: alice,
-		Index:   "1",
-		Game:    "*b*b*b*b|b*b*b*b*|*b*b*b*b|********|********|r*r*r*r*|*r*r*r*r|r*r*r*r*",
-		Turn:    "b",
-		Red:     bob,
-		Black:   carol,
+		Creator:  alice,
+		Index:    "1",
+		Game:     "*b*b*b*b|b*b*b*b*|*b*b*b*b|********|********|r*r*r*r*|*r*r*r*r|r*r*r*r*",
+		Turn:     "b",
+		Red:      bob,
+		Black:    carol,
+		BeforeId: "-1",
+		AfterId:  "-1",
 	}, game1)
 }
 
@@ -95,12 +99,14 @@ func TestCreate1GameGetAll(t *testing.T) {
 	games := keeper.GetAllStoredGame(sdk.UnwrapSDKContext(context))
 	require.Len(t, games, 1)
 	require.EqualValues(t, types.StoredGame{
-		Creator: alice,
-		Index:   "1",
-		Game:    "*b*b*b*b|b*b*b*b*|*b*b*b*b|********|********|r*r*r*r*|*r*r*r*r|r*r*r*r*",
-		Turn:    "b",
-		Red:     bob,
-		Black:   carol,
+		Creator:  alice,
+		Index:    "1",
+		Game:     "*b*b*b*b|b*b*b*b*|*b*b*b*b|********|********|r*r*r*r*|*r*r*r*r|r*r*r*r*",
+		Turn:     "b",
+		Red:      bob,
+		Black:    carol,
+		BeforeId: "-1",
+		AfterId:  "-1",
 	}, games[0])
 }
 
@@ -177,7 +183,9 @@ func TestCreate3GamesHasSaved(t *testing.T) {
 	nextGame, found := keeper.GetNextGame(sdk.UnwrapSDKContext(context))
 	require.True(t, found)
 	require.EqualValues(t, types.NextGame{
-		IdValue: 4,
+		IdValue:  4,
+		FifoHead: "1",
+		FifoTail: "3",
 	}, nextGame)
 	game1, found1 := keeper.GetStoredGame(sdk.UnwrapSDKContext(context), "1")
 	require.True(t, found1)
@@ -188,6 +196,8 @@ func TestCreate3GamesHasSaved(t *testing.T) {
 		Turn:    "b",
 		Red:     bob,
 		Black:   carol,
+				BeforeId:  "-1",
+		AfterId:   "2",
 	}, game1)
 	game2, found2 := keeper.GetStoredGame(sdk.UnwrapSDKContext(context), "2")
 	require.True(t, found2)
@@ -198,6 +208,8 @@ func TestCreate3GamesHasSaved(t *testing.T) {
 		Turn:    "b",
 		Red:     carol,
 		Black:   alice,
+		BeforeId:  "1",
+		AfterId:   "3",
 	}, game2)
 	game3, found3 := keeper.GetStoredGame(sdk.UnwrapSDKContext(context), "3")
 	require.True(t, found3)
@@ -208,6 +220,8 @@ func TestCreate3GamesHasSaved(t *testing.T) {
 		Turn:    "b",
 		Red:     alice,
 		Black:   bob,
+		BeforeId:  "2",
+		AfterId:   "-1",
 	}, game3)
 }
 
