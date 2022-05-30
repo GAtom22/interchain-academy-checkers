@@ -68,7 +68,7 @@ func TestDefaultGenesisIsCorrect(t *testing.T) {
 		&types.GenesisState{
 			StoredGameList: []types.StoredGame{},
 			NextGame:       &types.NextGame{
-				IdValue:  0,
+				IdValue:  1,
 				FifoHead: "-1",
 				FifoTail: "-1",
 			},

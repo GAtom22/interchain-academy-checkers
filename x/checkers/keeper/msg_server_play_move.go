@@ -62,6 +62,7 @@ func (k msgServer) PlayMove(goCtx context.Context, msg *types.MsgPlayMove) (*typ
 
 	// 6. Prepare the updated board to be stored
 	storedGame.MoveCount++
+	storedGame.Deadline = types.FormatDeadline(types.GetNextDeadline(ctx))
 
 	// Send to the back of the FIFO
 	nextGame, found := k.Keeper.GetNextGame(ctx)
