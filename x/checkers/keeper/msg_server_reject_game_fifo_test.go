@@ -40,6 +40,7 @@ func TestRejectSecondGameHasSavedFifo(t *testing.T) {
 		BeforeId:  "-1",
 		AfterId:   "-1",
 		Deadline:  types.FormatDeadline(ctx.BlockTime().Add(types.MaxTurnDuration)),
+		Winner:    "*",
 	}, game2)
 }
 
@@ -80,6 +81,7 @@ func TestRejectMiddleGameHasSavedFifo(t *testing.T) {
 		BeforeId:  "-1",
 		AfterId:   "3",
 		Deadline:  types.FormatDeadline(ctx.BlockTime().Add(types.MaxTurnDuration)),
+		Winner:    "*",
 	}, game1)
 	game3, found3 := keeper.GetStoredGame(sdk.UnwrapSDKContext(context), "3")
 	require.True(t, found3)
@@ -94,5 +96,6 @@ func TestRejectMiddleGameHasSavedFifo(t *testing.T) {
 		BeforeId:  "1",
 		AfterId:   "-1",
 		Deadline:  types.FormatDeadline(ctx.BlockTime().Add(types.MaxTurnDuration)),
+		Winner:    "*",
 	}, game3)
 }

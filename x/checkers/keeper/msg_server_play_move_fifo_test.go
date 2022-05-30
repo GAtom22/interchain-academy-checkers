@@ -45,6 +45,7 @@ func TestPlayMove2Games1MoveHasSavedFifo(t *testing.T) {
 		BeforeId:  "2",
 		AfterId:   "-1",
 		Deadline:  types.FormatDeadline(ctx.BlockTime().Add(types.MaxTurnDuration)),
+		Winner:    "*",
 	}, game1)
 	game2, found2 := keeper.GetStoredGame(sdk.UnwrapSDKContext(context), "2")
 	require.True(t, found2)
@@ -59,6 +60,7 @@ func TestPlayMove2Games1MoveHasSavedFifo(t *testing.T) {
 		BeforeId:  "-1",
 		AfterId:   "1",
 		Deadline:  types.FormatDeadline(ctx.BlockTime().Add(types.MaxTurnDuration)),
+		Winner:    "*",
 	}, game2)
 }
 
@@ -108,6 +110,7 @@ func TestPlayMove2Games2MovesHasSavedFifo(t *testing.T) {
 		BeforeId:  "-1",
 		AfterId:   "2",
 		Deadline:  types.FormatDeadline(ctx.BlockTime().Add(types.MaxTurnDuration)),
+		Winner:    "*",
 	}, game1)
 	game2, found2 := keeper.GetStoredGame(sdk.UnwrapSDKContext(context), "2")
 	require.True(t, found2)
@@ -122,5 +125,6 @@ func TestPlayMove2Games2MovesHasSavedFifo(t *testing.T) {
 		BeforeId:  "1",
 		AfterId:   "-1",
 		Deadline:  types.FormatDeadline(ctx.BlockTime().Add(types.MaxTurnDuration)),
+		Winner:    "*",
 	}, game2)
 }
