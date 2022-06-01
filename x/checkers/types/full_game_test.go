@@ -42,7 +42,7 @@ func TestGetAddressWrongCreator(t *testing.T) {
 	require.Nil(t, creator)
 	require.EqualError(t,
 		err,
-		"creator address is invalid: cosmos1jmjfq0tplp9tmx4v9uemw72y4d2wa5nr3xn9d4: decoding bech32 failed: checksum failed. Expected 3xn9d3, got 3xn9d4.")
+		"creator address is invalid: cosmos1jmjfq0tplp9tmx4v9uemw72y4d2wa5nr3xn9d4: decoding bech32 failed: invalid checksum (expected 3xn9d3 got 3xn9d4)")
 	require.EqualError(t, storedGame.Validate(), err.Error())
 }
 
@@ -61,7 +61,7 @@ func TestGetAddressWrongBlack(t *testing.T) {
 	require.Nil(t, black)
 	require.EqualError(t,
 		err,
-		"black address is invalid: cosmos1xyxs3skf3f4jfqeuv89yyaqvjc6lffavxqhc8h: decoding bech32 failed: checksum failed. Expected xqhc8g, got xqhc8h.")
+		"black address is invalid: cosmos1xyxs3skf3f4jfqeuv89yyaqvjc6lffavxqhc8h: decoding bech32 failed: invalid checksum (expected xqhc8g got xqhc8h)")
 	require.EqualError(t, storedGame.Validate(), err.Error())
 }
 
@@ -80,7 +80,7 @@ func TestGetAddressWrongRed(t *testing.T) {
 	require.Nil(t, red)
 	require.EqualError(t,
 		err,
-		"red address is invalid: cosmos1e0w5t53nrq7p66fye6c8p0ynyhf6y24l4yuxd8: decoding bech32 failed: checksum failed. Expected 4yuxd7, got 4yuxd8.")
+		"red address is invalid: cosmos1e0w5t53nrq7p66fye6c8p0ynyhf6y24l4yuxd8: decoding bech32 failed: invalid checksum (expected 4yuxd7 got 4yuxd8)")
 	require.EqualError(t, storedGame.Validate(), err.Error())
 }
 

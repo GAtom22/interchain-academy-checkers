@@ -1,35 +1,34 @@
 package keeper_test
 
 import (
-	"testing"
-
-	"github.com/alice/checkers/x/checkers/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/stretchr/testify/require"
+	"github.com/alice/checkers/x/checkers/types"
 )
 
-func TestRejectSecondGameHasSavedFifo(t *testing.T) {
-	msgServer, keeper, context := setupMsgServerWithOneGameForRejectGame(t)
-	ctx := sdk.UnwrapSDKContext(context)
-	msgServer.CreateGame(context, &types.MsgCreateGame{
+func (suite *IntegrationTestSuite) TestRejectSecondGameHasSavedFifo() {
+	suite.setupSuiteWithOneGameForRejectGame()
+	goCtx := sdk.WrapSDKContext(suite.ctx)
+	suite.msgServer.CreateGame(goCtx, &types.MsgCreateGame{
 		Creator: bob,
 		Red:     carol,
 		Black:   alice,
+		Wager:   12,
 	})
-	msgServer.RejectGame(context, &types.MsgRejectGame{
+	suite.msgServer.RejectGame(goCtx, &types.MsgRejectGame{
 		Creator: carol,
 		IdValue: "1",
 	})
-	nextGame, found := keeper.GetNextGame(sdk.UnwrapSDKContext(context))
-	require.True(t, found)
-	require.EqualValues(t, types.NextGame{
+	keeper := suite.app.CheckersKeeper
+	nextGame, found := keeper.GetNextGame(suite.ctx)
+	suite.Require().True(found)
+	suite.Require().EqualValues(types.NextGame{
 		IdValue:  3,
 		FifoHead: "2",
 		FifoTail: "2",
 	}, nextGame)
-	game2, found2 := keeper.GetStoredGame(sdk.UnwrapSDKContext(context), "2")
-	require.True(t, found2)
-	require.EqualValues(t, types.StoredGame{
+	game2, found2 := keeper.GetStoredGame(suite.ctx, "2")
+	suite.Require().True(found2)
+	suite.Require().EqualValues(types.StoredGame{
 		Creator:   bob,
 		Index:     "2",
 		Game:      "*b*b*b*b|b*b*b*b*|*b*b*b*b|********|********|r*r*r*r*|*r*r*r*r|r*r*r*r*",
@@ -39,38 +38,42 @@ func TestRejectSecondGameHasSavedFifo(t *testing.T) {
 		MoveCount: uint64(0),
 		BeforeId:  "-1",
 		AfterId:   "-1",
-		Deadline:  types.FormatDeadline(ctx.BlockTime().Add(types.MaxTurnDuration)),
+		Deadline:  types.FormatDeadline(suite.ctx.BlockTime().Add(types.MaxTurnDuration)),
 		Winner:    "*",
+		Wager:     12,
 	}, game2)
 }
 
-func TestRejectMiddleGameHasSavedFifo(t *testing.T) {
-	msgServer, keeper, context := setupMsgServerWithOneGameForRejectGame(t)
-	ctx := sdk.UnwrapSDKContext(context)
-	msgServer.CreateGame(context, &types.MsgCreateGame{
+func (suite *IntegrationTestSuite) TestRejectMiddleGameHasSavedFifo() {
+	suite.setupSuiteWithOneGameForRejectGame()
+	goCtx := sdk.WrapSDKContext(suite.ctx)
+	suite.msgServer.CreateGame(goCtx, &types.MsgCreateGame{
 		Creator: bob,
 		Red:     carol,
 		Black:   alice,
+		Wager:   12,
 	})
-	msgServer.CreateGame(context, &types.MsgCreateGame{
+	suite.msgServer.CreateGame(goCtx, &types.MsgCreateGame{
 		Creator: carol,
 		Red:     alice,
 		Black:   bob,
+		Wager:   13,
 	})
-	msgServer.RejectGame(context, &types.MsgRejectGame{
+	suite.msgServer.RejectGame(goCtx, &types.MsgRejectGame{
 		Creator: carol,
 		IdValue: "2",
 	})
-	nextGame, found := keeper.GetNextGame(sdk.UnwrapSDKContext(context))
-	require.True(t, found)
-	require.EqualValues(t, types.NextGame{
+	keeper := suite.app.CheckersKeeper
+	nextGame, found := keeper.GetNextGame(suite.ctx)
+	suite.Require().True(found)
+	suite.Require().EqualValues(types.NextGame{
 		IdValue:  4,
 		FifoHead: "1",
 		FifoTail: "3",
 	}, nextGame)
-	game1, found1 := keeper.GetStoredGame(sdk.UnwrapSDKContext(context), "1")
-	require.True(t, found1)
-	require.EqualValues(t, types.StoredGame{
+	game1, found1 := keeper.GetStoredGame(suite.ctx, "1")
+	suite.Require().True(found1)
+	suite.Require().EqualValues(types.StoredGame{
 		Creator:   alice,
 		Index:     "1",
 		Game:      "*b*b*b*b|b*b*b*b*|*b*b*b*b|********|********|r*r*r*r*|*r*r*r*r|r*r*r*r*",
@@ -80,12 +83,13 @@ func TestRejectMiddleGameHasSavedFifo(t *testing.T) {
 		MoveCount: uint64(0),
 		BeforeId:  "-1",
 		AfterId:   "3",
-		Deadline:  types.FormatDeadline(ctx.BlockTime().Add(types.MaxTurnDuration)),
+		Deadline:  types.FormatDeadline(suite.ctx.BlockTime().Add(types.MaxTurnDuration)),
 		Winner:    "*",
+		Wager:     11,
 	}, game1)
-	game3, found3 := keeper.GetStoredGame(sdk.UnwrapSDKContext(context), "3")
-	require.True(t, found3)
-	require.EqualValues(t, types.StoredGame{
+	game3, found3 := keeper.GetStoredGame(suite.ctx, "3")
+	suite.Require().True(found3)
+	suite.Require().EqualValues(types.StoredGame{
 		Creator:   carol,
 		Index:     "3",
 		Game:      "*b*b*b*b|b*b*b*b*|*b*b*b*b|********|********|r*r*r*r*|*r*r*r*r|r*r*r*r*",
@@ -95,7 +99,8 @@ func TestRejectMiddleGameHasSavedFifo(t *testing.T) {
 		MoveCount: uint64(0),
 		BeforeId:  "1",
 		AfterId:   "-1",
-		Deadline:  types.FormatDeadline(ctx.BlockTime().Add(types.MaxTurnDuration)),
+		Deadline:  types.FormatDeadline(suite.ctx.BlockTime().Add(types.MaxTurnDuration)),
 		Winner:    "*",
+		Wager:     13,
 	}, game3)
 }

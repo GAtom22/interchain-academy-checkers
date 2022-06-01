@@ -22,7 +22,7 @@ func (k msgServer) RejectGame(goCtx context.Context, msg *types.MsgRejectGame) (
 	if storedGame.Winner != rules.PieceStrings[rules.NO_PLAYER] {
 		return nil, types.ErrGameFinished
 	}
-	
+
 	if strings.Compare(storedGame.Red, msg.Creator) == 0 {
 		// Black plays first
 		if 1 < storedGame.MoveCount { // Notice the use of the new field
@@ -35,6 +35,9 @@ func (k msgServer) RejectGame(goCtx context.Context, msg *types.MsgRejectGame) (
 	} else {
 		return nil, types.ErrCreatorNotPlayer
 	}
+
+	// Refund wager to black player if red rejects after black played
+	k.Keeper.MustRefundWager(ctx, &storedGame)
 
 	// Remove the game completely
 	// Remove from the FIFO

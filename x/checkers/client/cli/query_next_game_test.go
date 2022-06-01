@@ -14,7 +14,7 @@ import (
 	"github.com/alice/checkers/x/checkers/types"
 )
 
-func networkWithNextGameObjects(t *testing.T) (*network.Network, types.NextGame) {
+func networkWithNextGameObjects(t *testing.T) (*network.Network, *types.NextGame) {
 	t.Helper()
 	cfg := network.DefaultConfig()
 	state := types.GenesisState{}
@@ -24,7 +24,7 @@ func networkWithNextGameObjects(t *testing.T) (*network.Network, types.NextGame)
 	buf, err := cfg.Codec.MarshalJSON(&state)
 	require.NoError(t, err)
 	cfg.GenesisState[types.ModuleName] = buf
-	return network.New(t, cfg), *state.NextGame
+	return network.New(t, cfg), state.NextGame
 }
 
 func TestShowNextGame(t *testing.T) {
@@ -38,7 +38,7 @@ func TestShowNextGame(t *testing.T) {
 		desc string
 		args []string
 		err  error
-		obj  types.NextGame
+		obj  *types.NextGame
 	}{
 		{
 			desc: "get",

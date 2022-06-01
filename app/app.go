@@ -25,6 +25,7 @@ import (
 	authtx "github.com/cosmos/cosmos-sdk/x/auth/tx"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/cosmos/cosmos-sdk/x/auth/vesting"
+	vestingtypes "github.com/cosmos/cosmos-sdk/x/auth/vesting/types"
 	"github.com/cosmos/cosmos-sdk/x/bank"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
@@ -81,6 +82,7 @@ import (
 	tmjson "github.com/tendermint/tendermint/libs/json"
 	"github.com/tendermint/tendermint/libs/log"
 	tmos "github.com/tendermint/tendermint/libs/os"
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 	dbm "github.com/tendermint/tm-db"
 
 	"github.com/tendermint/spm/cosmoscmd"
@@ -154,6 +156,7 @@ var (
 		stakingtypes.NotBondedPoolName: {authtypes.Burner, authtypes.Staking},
 		govtypes.ModuleName:            {authtypes.Burner},
 		ibctransfertypes.ModuleName:    {authtypes.Minter, authtypes.Burner},
+		checkersmoduletypes.ModuleName: nil,
 		// this line is used by starport scaffolding # stargate/app/maccPerms
 	}
 )
@@ -230,6 +233,32 @@ func New(
 	appOpts servertypes.AppOptions,
 	baseAppOptions ...func(*baseapp.BaseApp),
 ) cosmoscmd.App {
+	return NewApp(
+		logger,
+		db,
+		traceStore,
+		loadLatest,
+		skipUpgradeHeights,
+		homePath,
+		invCheckPeriod,
+		encodingConfig,
+		appOpts,
+		baseAppOptions...)
+}
+
+func NewApp(
+	logger log.Logger,
+	db dbm.DB,
+	traceStore io.Writer,
+	loadLatest bool,
+	skipUpgradeHeights map[int64]bool,
+	homePath string,
+	invCheckPeriod uint,
+	encodingConfig cosmoscmd.EncodingConfig,
+	appOpts servertypes.AppOptions,
+	baseAppOptions ...func(*baseapp.BaseApp),
+) *App {
+
 	appCodec := encodingConfig.Marshaler
 	cdc := encodingConfig.Amino
 	interfaceRegistry := encodingConfig.InterfaceRegistry
@@ -344,6 +373,7 @@ func New(
 	)
 
 	app.CheckersKeeper = *checkersmodulekeeper.NewKeeper(
+		app.BankKeeper,
 		appCodec,
 		keys[checkersmoduletypes.StoreKey],
 		keys[checkersmoduletypes.MemStoreKey],
@@ -397,12 +427,46 @@ func New(
 	// CanWithdrawInvariant invariant.
 	// NOTE: staking module is required if HistoricalEntries param > 0
 	app.mm.SetOrderBeginBlockers(
-		upgradetypes.ModuleName, capabilitytypes.ModuleName, minttypes.ModuleName, distrtypes.ModuleName, slashingtypes.ModuleName,
-		evidencetypes.ModuleName, stakingtypes.ModuleName, ibchost.ModuleName,
+		upgradetypes.ModuleName,
+		capabilitytypes.ModuleName,
+		minttypes.ModuleName,
+		distrtypes.ModuleName,
+		slashingtypes.ModuleName,
+		evidencetypes.ModuleName,
+		stakingtypes.ModuleName,
+		ibchost.ModuleName,
+		authtypes.ModuleName,
+		genutiltypes.ModuleName,
+		ibctransfertypes.ModuleName,
+		banktypes.ModuleName,
+		crisistypes.ModuleName,
 		feegrant.ModuleName,
+		govtypes.ModuleName,
+		checkersmoduletypes.ModuleName,
+		vestingtypes.ModuleName, 
+		paramstypes.ModuleName,
 	)
 
-	app.mm.SetOrderEndBlockers(crisistypes.ModuleName, govtypes.ModuleName, stakingtypes.ModuleName, checkersmoduletypes.ModuleName)
+	app.mm.SetOrderEndBlockers(
+		crisistypes.ModuleName,
+		govtypes.ModuleName,
+		stakingtypes.ModuleName,
+		upgradetypes.ModuleName,
+		capabilitytypes.ModuleName,
+		minttypes.ModuleName,
+		distrtypes.ModuleName,
+		slashingtypes.ModuleName,
+		evidencetypes.ModuleName,
+		ibchost.ModuleName,
+		authtypes.ModuleName,
+		genutiltypes.ModuleName,
+		ibctransfertypes.ModuleName,
+		banktypes.ModuleName,
+		feegrant.ModuleName,
+		checkersmoduletypes.ModuleName,
+		vestingtypes.ModuleName, 
+		paramstypes.ModuleName,
+	)
 
 	// NOTE: The genutils module must occur after staking so that pools are
 	// properly initialized with tokens from genesis accounts.
@@ -424,6 +488,10 @@ func New(
 		evidencetypes.ModuleName,
 		ibctransfertypes.ModuleName,
 		checkersmoduletypes.ModuleName,
+		upgradetypes.ModuleName,
+		feegrant.ModuleName,
+		vestingtypes.ModuleName, 
+		paramstypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/initGenesis
 	)
 
@@ -460,6 +528,16 @@ func New(
 		if err := app.LoadLatestVersion(); err != nil {
 			tmos.Exit(err.Error())
 		}
+
+		// Initialize and seal the capability keeper so all persistent capabilities
+		// are loaded in-memory and prevent any further modules from creating scoped
+		// sub-keepers.
+		// This must be done during creation of baseapp rather than in InitChain so
+		// that in-memory capabilities get regenerated on app restart.
+		// Note that since this reads from the store, we can only perform it when
+		// `loadLatest` is set to true.
+		ctx := app.BaseApp.NewUncachedContext(true, tmproto.Header{})
+		app.CapabilityKeeper.InitMemStore(ctx)
 	}
 
 	app.ScopedIBCKeeper = scopedIBCKeeper
