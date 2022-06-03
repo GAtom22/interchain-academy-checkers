@@ -1,8 +1,8 @@
 package keeper_test
 
 import (
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/alice/checkers/x/checkers/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 func (suite *IntegrationTestSuite) TestPlayMove2Games1MoveHasSavedFifo() {
@@ -13,6 +13,7 @@ func (suite *IntegrationTestSuite) TestPlayMove2Games1MoveHasSavedFifo() {
 		Red:     carol,
 		Black:   alice,
 		Wager:   12,
+		Token:   sdk.DefaultBondDenom,
 	})
 
 	suite.msgServer.PlayMove(goCtx, &types.MsgPlayMove{
@@ -46,6 +47,7 @@ func (suite *IntegrationTestSuite) TestPlayMove2Games1MoveHasSavedFifo() {
 		Deadline:  types.FormatDeadline(suite.ctx.BlockTime().Add(types.MaxTurnDuration)),
 		Winner:    "*",
 		Wager:     11,
+		Token:   sdk.DefaultBondDenom,
 	}, game1)
 	game2, found2 := keeper.GetStoredGame(suite.ctx, "2")
 	suite.Require().True(found2)
@@ -62,6 +64,7 @@ func (suite *IntegrationTestSuite) TestPlayMove2Games1MoveHasSavedFifo() {
 		Deadline:  types.FormatDeadline(suite.ctx.BlockTime().Add(types.MaxTurnDuration)),
 		Winner:    "*",
 		Wager:     12,
+		Token:   sdk.DefaultBondDenom,
 	}, game2)
 }
 
@@ -73,6 +76,7 @@ func (suite *IntegrationTestSuite) TestPlayMove2Games2MovesHasSavedFifo() {
 		Red:     carol,
 		Black:   alice,
 		Wager:   12,
+		Token:   sdk.DefaultBondDenom,
 	})
 	suite.msgServer.PlayMove(goCtx, &types.MsgPlayMove{
 		Creator: carol,
@@ -114,6 +118,7 @@ func (suite *IntegrationTestSuite) TestPlayMove2Games2MovesHasSavedFifo() {
 		Deadline:  types.FormatDeadline(suite.ctx.BlockTime().Add(types.MaxTurnDuration)),
 		Winner:    "*",
 		Wager:     11,
+		Token:   sdk.DefaultBondDenom,
 	}, game1)
 	game2, found2 := keeper.GetStoredGame(suite.ctx, "2")
 	suite.Require().True(found2)
@@ -130,5 +135,6 @@ func (suite *IntegrationTestSuite) TestPlayMove2Games2MovesHasSavedFifo() {
 		Deadline:  types.FormatDeadline(suite.ctx.BlockTime().Add(types.MaxTurnDuration)),
 		Winner:    "*",
 		Wager:     12,
+		Token:   sdk.DefaultBondDenom,
 	}, game2)
 }

@@ -443,7 +443,7 @@ func NewApp(
 		feegrant.ModuleName,
 		govtypes.ModuleName,
 		checkersmoduletypes.ModuleName,
-		vestingtypes.ModuleName, 
+		vestingtypes.ModuleName,
 		paramstypes.ModuleName,
 	)
 
@@ -464,7 +464,7 @@ func NewApp(
 		banktypes.ModuleName,
 		feegrant.ModuleName,
 		checkersmoduletypes.ModuleName,
-		vestingtypes.ModuleName, 
+		vestingtypes.ModuleName,
 		paramstypes.ModuleName,
 	)
 
@@ -490,7 +490,7 @@ func NewApp(
 		checkersmoduletypes.ModuleName,
 		upgradetypes.ModuleName,
 		feegrant.ModuleName,
-		vestingtypes.ModuleName, 
+		vestingtypes.ModuleName,
 		paramstypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/initGenesis
 	)

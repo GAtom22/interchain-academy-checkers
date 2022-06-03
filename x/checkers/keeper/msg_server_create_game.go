@@ -31,6 +31,7 @@ func (k msgServer) CreateGame(goCtx context.Context, msg *types.MsgCreateGame) (
 		Deadline:  types.FormatDeadline(types.GetNextDeadline(ctx)),
 		Winner:    rules.PieceStrings[rules.NO_PLAYER],
 		Wager:     msg.Wager,
+		Token:     msg.Token,
 	}
 
 	err := storedGame.Validate()
@@ -45,6 +46,8 @@ func (k msgServer) CreateGame(goCtx context.Context, msg *types.MsgCreateGame) (
 	nextGame.IdValue++
 	k.Keeper.SetNextGame(ctx, nextGame)
 
+	ctx.GasMeter().ConsumeGas(types.CreateGameGas, "Create game")
+
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(sdk.EventTypeMessage,
 			sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
@@ -54,6 +57,7 @@ func (k msgServer) CreateGame(goCtx context.Context, msg *types.MsgCreateGame) (
 			sdk.NewAttribute(types.StoredGameEventRed, msg.Red),
 			sdk.NewAttribute(types.StoredGameEventBlack, msg.Black),
 			sdk.NewAttribute(types.StoredGameEventWager, strconv.FormatUint(msg.Wager, 10)),
+			sdk.NewAttribute(types.StoredGameEventToken, msg.Token),
 		),
 	)
 

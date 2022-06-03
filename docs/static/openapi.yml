@@ -4,6 +4,69 @@ info:
   name: ''
   description: ''
 paths:
+  '/alice/checkers/checkers/can_play_move/{idValue}/{player}/{fromX}/{fromY}/{toX}/{toY}':
+    get:
+      summary: Queries a list of CanPlayMove items.
+      operationId: AliceCheckersCheckersCanPlayMove
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              possible:
+                type: boolean
+              reason:
+                type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: idValue
+          in: path
+          required: true
+          type: string
+        - name: player
+          in: path
+          required: true
+          type: string
+        - name: fromX
+          in: path
+          required: true
+          type: string
+          format: uint64
+        - name: fromY
+          in: path
+          required: true
+          type: string
+          format: uint64
+        - name: toX
+          in: path
+          required: true
+          type: string
+          format: uint64
+        - name: toY
+          in: path
+          required: true
+          type: string
+          format: uint64
+      tags:
+        - Query
   /alice/checkers/checkers/nextGame:
     get:
       summary: Queries a nextGame by index.
@@ -85,6 +148,8 @@ paths:
                     wager:
                       type: string
                       format: uint64
+                    token:
+                      type: string
               pagination:
                 type: object
                 properties:
@@ -228,6 +293,8 @@ paths:
                   wager:
                     type: string
                     format: uint64
+                  token:
+                    type: string
         default:
           description: An unexpected error response.
           schema:
@@ -27993,6 +28060,8 @@ definitions:
             wager:
               type: string
               format: uint64
+            token:
+              type: string
       pagination:
         type: object
         properties:
@@ -28018,6 +28087,13 @@ definitions:
                    repeated Bar results = 1;
                    PageResponse page = 2;
            }
+  alice.checkers.checkers.QueryCanPlayMoveResponse:
+    type: object
+    properties:
+      possible:
+        type: boolean
+      reason:
+        type: string
   alice.checkers.checkers.QueryGetNextGameResponse:
     type: object
     properties:
@@ -28063,6 +28139,8 @@ definitions:
           wager:
             type: string
             format: uint64
+          token:
+            type: string
   alice.checkers.checkers.StoredGame:
     type: object
     properties:
@@ -28092,6 +28170,8 @@ definitions:
       wager:
         type: string
         format: uint64
+      token:
+        type: string
   cosmos.base.query.v1beta1.PageRequest:
     type: object
     properties:

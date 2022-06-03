@@ -23,10 +23,8 @@ require (
 	github.com/gin-gonic/gin v1.7.0 // indirect
 	github.com/golang/protobuf v1.5.2
 	github.com/google/go-cmp v0.5.8 // indirect
-	github.com/grpc-ecosystem/grpc-gateway/v2 v2.10.3 // indirect
 	github.com/opencontainers/image-spec v1.0.2 // indirect
 	github.com/opencontainers/runc v1.0.3 // indirect
-	github.com/regen-network/cosmos-proto v0.3.1 // indirect
 	github.com/spf13/viper v1.10.1 // indirect
 	golang.org/x/net v0.0.0-20220127200216-cd36cc0744dd // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
