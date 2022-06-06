@@ -249,7 +249,7 @@ func (suite *IntegrationTestSuite) TestPlayMoveSavedGame() {
 		Deadline:  types.FormatDeadline(suite.ctx.BlockTime().Add(types.MaxTurnDuration)),
 		Winner:    "*",
 		Wager:     11,
-		Token:   sdk.DefaultBondDenom,
+		Token:     sdk.DefaultBondDenom,
 	}, game1)
 }
 
@@ -452,7 +452,7 @@ func (suite *IntegrationTestSuite) TestPlayMove2SavedGame() {
 		Deadline:  types.FormatDeadline(suite.ctx.BlockTime().Add(types.MaxTurnDuration)),
 		Winner:    "*",
 		Wager:     11,
-		Token:   sdk.DefaultBondDenom,
+		Token:     sdk.DefaultBondDenom,
 	}, game1)
 }
 
@@ -579,6 +579,6 @@ func (suite *IntegrationTestSuite) TestPlayMove3SavedGame() {
 		Deadline:  types.FormatDeadline(suite.ctx.BlockTime().Add(types.MaxTurnDuration)),
 		Winner:    "*",
 		Wager:     11,
-		Token:   sdk.DefaultBondDenom,
+		Token:     sdk.DefaultBondDenom,
 	}, game1)
 }

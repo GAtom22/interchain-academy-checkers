@@ -235,7 +235,6 @@ func (suite *IntegrationTestSuite) TestRejectGameByRedOneMoveRemovedGame() {
 	suite.Require().False(found)
 }
 
-
 func (suite *IntegrationTestSuite) TestRejectGameByRedOneMoveRefundedForeignToken() {
 	suite.setupSuiteWithOneGameForRejectGame()
 	goCtx := sdk.WrapSDKContext(suite.ctx)

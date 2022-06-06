@@ -138,7 +138,7 @@ func TestCanPlayAsExpected(t *testing.T) {
 				Deadline:  "",
 				Winner:    "*",
 				Wager:     0,
-                Token:   sdk.DefaultBondDenom,
+				Token:     sdk.DefaultBondDenom,
 			})
 			response, err := keeper.CanPlayMove(goCtx, testCase.request)
 			require.Nil(t, err)
@@ -170,7 +170,7 @@ func TestCanPlayWrongNoGame(t *testing.T) {
 		Deadline:  "",
 		Winner:    "*",
 		Wager:     0,
-        Token:   sdk.DefaultBondDenom,
+		Token:     sdk.DefaultBondDenom,
 	})
 	_, err := keeper.CanPlayMove(goCtx, nil)
 	require.Error(t, err, "game by id not found: 9999999999")

@@ -33,6 +33,34 @@ export interface CheckersNextGame {
   fifoTail?: string;
 }
 
+export interface CheckersPlayerInfo {
+  index?: string;
+
+  /** @format uint64 */
+  wonCount?: string;
+
+  /** @format uint64 */
+  lostCount?: string;
+
+  /** @format uint64 */
+  forfeitedCount?: string;
+}
+
+export interface CheckersQueryAllPlayerInfoResponse {
+  playerInfo?: CheckersPlayerInfo[];
+
+  /**
+   * PageResponse is to be embedded in gRPC response messages where the
+   * corresponding request message has used PageRequest.
+   *
+   *  message SomeResponse {
+   *          repeated Bar results = 1;
+   *          PageResponse page = 2;
+   *  }
+   */
+  pagination?: V1Beta1PageResponse;
+}
+
 export interface CheckersQueryAllStoredGameResponse {
   storedGame?: CheckersStoredGame[];
 
@@ -55,6 +83,10 @@ export interface CheckersQueryCanPlayMoveResponse {
 
 export interface CheckersQueryGetNextGameResponse {
   NextGame?: CheckersNextGame;
+}
+
+export interface CheckersQueryGetPlayerInfoResponse {
+  playerInfo?: CheckersPlayerInfo;
 }
 
 export interface CheckersQueryGetStoredGameResponse {
@@ -386,6 +418,48 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
   queryNextGame = (params: RequestParams = {}) =>
     this.request<CheckersQueryGetNextGameResponse, RpcStatus>({
       path: `/alice/checkers/checkers/nextGame`,
+      method: "GET",
+      format: "json",
+      ...params,
+    });
+
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QueryPlayerInfoAll
+   * @summary Queries a list of PlayerInfo items.
+   * @request GET:/alice/checkers/checkers/player_info
+   */
+  queryPlayerInfoAll = (
+    query?: {
+      "pagination.key"?: string;
+      "pagination.offset"?: string;
+      "pagination.limit"?: string;
+      "pagination.count_total"?: boolean;
+      "pagination.reverse"?: boolean;
+    },
+    params: RequestParams = {},
+  ) =>
+    this.request<CheckersQueryAllPlayerInfoResponse, RpcStatus>({
+      path: `/alice/checkers/checkers/player_info`,
+      method: "GET",
+      query: query,
+      format: "json",
+      ...params,
+    });
+
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QueryPlayerInfo
+   * @summary Queries a PlayerInfo by index.
+   * @request GET:/alice/checkers/checkers/player_info/{index}
+   */
+  queryPlayerInfo = (index: string, params: RequestParams = {}) =>
+    this.request<CheckersQueryGetPlayerInfoResponse, RpcStatus>({
+      path: `/alice/checkers/checkers/player_info/${index}`,
       method: "GET",
       format: "json",
       ...params,

@@ -454,7 +454,7 @@ func (suite *IntegrationTestSuite) TestForfeitPlayedTwice() {
 		Deadline:  oldDeadline,
 		Winner:    "r",
 		Wager:     11,
-		Token:   sdk.DefaultBondDenom,
+		Token:     sdk.DefaultBondDenom,
 	}, game1)
 
 	nextGame, found := keeper.GetNextGame(suite.ctx)
@@ -485,7 +485,6 @@ func (suite *IntegrationTestSuite) TestForfeitPlayedTwice() {
 		{Key: "amount", Value: "22stake"},
 	}, transferEvent.Attributes[2*transferEventCount:])
 }
-
 
 func (suite *IntegrationTestSuite) TestForfeitPlayedTwiceForeignToken() {
 	suite.setupSuiteWithBalances()
@@ -592,7 +591,7 @@ func (suite *IntegrationTestSuite) TestForfeitOlderPlayedTwice() {
 		Deadline:  oldDeadline,
 		Winner:    "r",
 		Wager:     11,
-		Token:   sdk.DefaultBondDenom,
+		Token:     sdk.DefaultBondDenom,
 	}, game1)
 
 	nextGame, found := keeper.GetNextGame(suite.ctx)
@@ -766,7 +765,7 @@ func (suite *IntegrationTestSuite) TestForfeit2OldestPlayedTwiceIn1Call() {
 		Deadline:  oldDeadline,
 		Winner:    "r",
 		Wager:     11,
-		Token:   sdk.DefaultBondDenom,
+		Token:     sdk.DefaultBondDenom,
 	}, game1)
 
 	game2, found = keeper.GetStoredGame(suite.ctx, "2")
@@ -784,7 +783,7 @@ func (suite *IntegrationTestSuite) TestForfeit2OldestPlayedTwiceIn1Call() {
 		Deadline:  oldDeadline,
 		Winner:    "r",
 		Wager:     12,
-		Token:   sdk.DefaultBondDenom,
+		Token:     sdk.DefaultBondDenom,
 	}, game2)
 
 	nextGame, found := keeper.GetNextGame(suite.ctx)

@@ -47,7 +47,7 @@ func (suite *IntegrationTestSuite) TestPlayMove2Games1MoveHasSavedFifo() {
 		Deadline:  types.FormatDeadline(suite.ctx.BlockTime().Add(types.MaxTurnDuration)),
 		Winner:    "*",
 		Wager:     11,
-		Token:   sdk.DefaultBondDenom,
+		Token:     sdk.DefaultBondDenom,
 	}, game1)
 	game2, found2 := keeper.GetStoredGame(suite.ctx, "2")
 	suite.Require().True(found2)
@@ -64,7 +64,7 @@ func (suite *IntegrationTestSuite) TestPlayMove2Games1MoveHasSavedFifo() {
 		Deadline:  types.FormatDeadline(suite.ctx.BlockTime().Add(types.MaxTurnDuration)),
 		Winner:    "*",
 		Wager:     12,
-		Token:   sdk.DefaultBondDenom,
+		Token:     sdk.DefaultBondDenom,
 	}, game2)
 }
 
@@ -118,7 +118,7 @@ func (suite *IntegrationTestSuite) TestPlayMove2Games2MovesHasSavedFifo() {
 		Deadline:  types.FormatDeadline(suite.ctx.BlockTime().Add(types.MaxTurnDuration)),
 		Winner:    "*",
 		Wager:     11,
-		Token:   sdk.DefaultBondDenom,
+		Token:     sdk.DefaultBondDenom,
 	}, game1)
 	game2, found2 := keeper.GetStoredGame(suite.ctx, "2")
 	suite.Require().True(found2)
@@ -135,6 +135,6 @@ func (suite *IntegrationTestSuite) TestPlayMove2Games2MovesHasSavedFifo() {
 		Deadline:  types.FormatDeadline(suite.ctx.BlockTime().Add(types.MaxTurnDuration)),
 		Winner:    "*",
 		Wager:     12,
-		Token:   sdk.DefaultBondDenom,
+		Token:     sdk.DefaultBondDenom,
 	}, game2)
 }

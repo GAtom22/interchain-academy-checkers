@@ -42,7 +42,7 @@ func (suite *IntegrationTestSuite) TestRejectSecondGameHasSavedFifo() {
 		Deadline:  types.FormatDeadline(suite.ctx.BlockTime().Add(types.MaxTurnDuration)),
 		Winner:    "*",
 		Wager:     12,
-		Token:   sdk.DefaultBondDenom,
+		Token:     sdk.DefaultBondDenom,
 	}, game2)
 }
 
@@ -90,7 +90,7 @@ func (suite *IntegrationTestSuite) TestRejectMiddleGameHasSavedFifo() {
 		Deadline:  types.FormatDeadline(suite.ctx.BlockTime().Add(types.MaxTurnDuration)),
 		Winner:    "*",
 		Wager:     11,
-		Token:   sdk.DefaultBondDenom,
+		Token:     sdk.DefaultBondDenom,
 	}, game1)
 	game3, found3 := keeper.GetStoredGame(suite.ctx, "3")
 	suite.Require().True(found3)
@@ -107,6 +107,6 @@ func (suite *IntegrationTestSuite) TestRejectMiddleGameHasSavedFifo() {
 		Deadline:  types.FormatDeadline(suite.ctx.BlockTime().Add(types.MaxTurnDuration)),
 		Winner:    "*",
 		Wager:     13,
-		Token:   sdk.DefaultBondDenom,
+		Token:     sdk.DefaultBondDenom,
 	}, game3)
 }

@@ -106,7 +106,6 @@ func (suite *IntegrationTestSuite) setupSuiteWithBalances() {
 	suite.app.BankKeeper.InitGenesis(suite.ctx, getBankGenesis())
 }
 
-
 func (suite *IntegrationTestSuite) RequireBankBalance(expected int, atAddress string) {
 	suite.RequireBankBalanceIn(expected, atAddress, sdk.DefaultBondDenom)
 }

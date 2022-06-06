@@ -77,5 +77,5 @@ const (
 )
 
 const (
-    StoredGameEventToken = "Token"
+	StoredGameEventToken = "Token"
 )

@@ -111,7 +111,7 @@ func (suite *IntegrationTestSuite) TestPlayMoveUpToWinner() {
 		Deadline:  types.FormatDeadline(suite.ctx.BlockTime().Add(types.MaxTurnDuration)),
 		Winner:    "b",
 		Wager:     11,
-		Token:   sdk.DefaultBondDenom,
+		Token:     sdk.DefaultBondDenom,
 	}, game1)
 	events := sdk.StringifyEvents(suite.ctx.EventManager().ABCIEvents())
 	suite.Require().Len(events, 2)
@@ -144,8 +144,6 @@ func (suite *IntegrationTestSuite) TestPlayMoveUpToWinner() {
 	suite.RequireBankBalance(balCarol+11, carol)
 	suite.RequireBankBalance(0, checkersModuleAddress)
 }
-
-
 
 func (suite *IntegrationTestSuite) TestPlayMoveUpToWinnerForeignToken() {
 	suite.setupSuiteWithBalances()
