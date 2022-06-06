@@ -9,6 +9,10 @@
  * ---------------------------------------------------------------
  */
 
+export interface CheckersLeaderboard {
+  winners?: CheckersWinningPlayer[];
+}
+
 export interface CheckersMsgCreateGameResponse {
   idValue?: string;
 }
@@ -81,6 +85,10 @@ export interface CheckersQueryCanPlayMoveResponse {
   reason?: string;
 }
 
+export interface CheckersQueryGetLeaderboardResponse {
+  Leaderboard?: CheckersLeaderboard;
+}
+
 export interface CheckersQueryGetNextGameResponse {
   NextGame?: CheckersNextGame;
 }
@@ -111,6 +119,14 @@ export interface CheckersStoredGame {
   /** @format uint64 */
   wager?: string;
   token?: string;
+}
+
+export interface CheckersWinningPlayer {
+  playerAddress?: string;
+
+  /** @format uint64 */
+  wonCount?: string;
+  dateAdded?: string;
 }
 
 export interface ProtobufAny {
@@ -402,6 +418,22 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
   ) =>
     this.request<CheckersQueryCanPlayMoveResponse, RpcStatus>({
       path: `/alice/checkers/checkers/can_play_move/${idValue}/${player}/${fromX}/${fromY}/${toX}/${toY}`,
+      method: "GET",
+      format: "json",
+      ...params,
+    });
+
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QueryLeaderboard
+   * @summary Queries a Leaderboard by index.
+   * @request GET:/alice/checkers/checkers/leaderboard
+   */
+  queryLeaderboard = (params: RequestParams = {}) =>
+    this.request<CheckersQueryGetLeaderboardResponse, RpcStatus>({
+      path: `/alice/checkers/checkers/leaderboard`,
       method: "GET",
       format: "json",
       ...params,

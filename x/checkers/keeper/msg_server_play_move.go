@@ -88,6 +88,10 @@ func (k msgServer) PlayMove(goCtx context.Context, msg *types.MsgPlayMove) (*typ
 
 		// Pay the winnings to the winner
 		k.Keeper.MustPayWinnings(ctx, &storedGame)
+
+		// Register win for the leaderboard
+		winnerInfo, _ := k.Keeper.MustRegisterPlayerWin(ctx, &storedGame)
+		k.Keeper.MustAddToLeaderboard(ctx, winnerInfo)
 	}
 
 	// Save for the next play move

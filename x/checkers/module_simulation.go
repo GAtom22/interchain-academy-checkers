@@ -34,8 +34,10 @@ func (AppModule) GenerateGenesisState(simState *module.SimulationState) {
 		accs[i] = acc.Address.String()
 	}
 	checkersGenesis := types.GenesisState{
-		Params: types.DefaultParams(),
-		// this line is used by starport scaffolding # simapp/module/genesisState
+		NextGame:       &types.NextGame{},
+		StoredGameList: []types.StoredGame{},
+		PlayerInfoList: []types.PlayerInfo{},
+		Leaderboard:    &types.Leaderboard{},
 	}
 	simState.GenState[types.ModuleName] = simState.Cdc.MustMarshalJSON(&checkersGenesis)
 }
